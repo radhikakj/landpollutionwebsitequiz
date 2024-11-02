@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Environmental Quiz</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', Times, serif, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-image: url('backgroundimage.jpg'); /* Replace with your image URL */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #fff;
+      overflow: hidden;
+    }
+    .title {
+      font-size: 2em;
+      font-weight: bold;
+      color: #0e0b17;
+      margin-bottom: 20px; /* Space between title and quiz box */
+      text-align: center;
+    }
+    .quiz-container {
+      width: 90%;
+      max-width: 500px;
+      background-color: #0a0914;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      transition: transform 0.5s ease-in-out;
+    }
+    .question {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .options {
+      list-style-type: none;
+      padding: 0;
+    }
+    .option {
+      background-color: yellow;
+      color: #121412;
+      border: none;
+      padding: 15px;
+      width: 100%;
+      font-size: 1em;
+      font-weight: bold;
+      margin: 10px 0;
+      cursor: pointer;
+      border-radius: 20px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+    .option.correct {
+      background-color: rgb(89, 244, 89);
+    }
+    .option.wrong {
+      background-color: red;
+    }
+    .feedback {
+      font-size: 1.2em;
+      margin-top: 15px;
+      color: #e4dcdc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Title above the quiz box -->
+  <h1 class="title">GK Quiz on Land Pollution</h1>
+
+  <!-- Quiz box -->
+  <div id="quiz" class="quiz-container">
+    <!-- Questions and options will be dynamically loaded here -->
+  </div>
+
+  <script>
+    // Array of questions with options and correct answer index
+    const questions = [
+      {
+        question: "Acid rain is caused by oxides of ________.",
+        options: [
+          "Phosphorus and Carbon",
+          "Sulphur and Nitrogen",
+          "Sulphur and Phosphorus",
+          "Nitrogen and Carbon"
+        ],
+        correct: 1
+      },
+      {
+        question: "Pesticide fertilizer causes which pollution?",
+        options: [
+          "Air pollution",
+          "Water pollution",
+          "Land pollution",
+          "Oil pollution"
+        ],
+        correct: 1
+      },
+      {
+        question: "Which of the following is/are the source(s) of land pollution?",
+        options: [
+          "Solid waste",
+          "Pesticides and chemical fertilizers",
+          "Effluent and sewage",
+          "All of the above"
+        ],
+        correct: 3
+      },
+      {
+        question: "Which of the following is NOT a biodegradable waste?",
+        options: [
+          "Vegetable peel",
+          "Dead leaves",
+          "Polythene bag",
+          "Rotting fruit"
+        ],
+        correct: 2
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    function loadQuestion() {
+      const quizContainer = document.getElementById("quiz");
+      const questionObj = questions[currentQuestionIndex];
+      quizContainer.innerHTML = `
+        <div class="question">${questionObj.question}</div>
+        <ul class="options">
+          ${questionObj.options.map((option, index) => `
+            <li><button class="option" onclick="checkAnswer(this, ${index})">${option}</button></li>
+          `).join('')}
+        </ul>
+        <div id="feedback" class="feedback"></div>
+      `;
+    }
+
+    function checkAnswer(button, selectedOptionIndex) {
+      const questionObj = questions[currentQuestionIndex];
+      const isCorrect = selectedOptionIndex === questionObj.correct;
+      
+      // Provide feedback
+      const feedback = document.getElementById("feedback");
+      feedback.textContent = isCorrect ? "Your Answer is Correct" : "Your Answer is Wrong";
+
+      // Show green or red color for the selected option
+      button.classList.add(isCorrect ? 'correct' : 'wrong');
+
+      // Disable all options after selection
+      document.querySelectorAll('.option').forEach(btn => btn.disabled = true);
+
+      // Move to the next question after a short delay
+      setTimeout(() => {
+        if (currentQuestionIndex < questions.length - 1) {
+          currentQuestionIndex++;
+          swipeQuestion();
+        } else {
+          endQuiz();
+        }
+      }, 1500);
+    }
+
+    function swipeQuestion() {
+      const quizContainer = document.getElementById("quiz");
+      quizContainer.style.transform = 'translateX(-100%)';
+      
+      setTimeout(() => {
+        loadQuestion();
+        quizContainer.style.transition = 'none';
+        quizContainer.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+          quizContainer.style.transition = 'transform 0.5s ease-in-out';
+          quizContainer.style.transform = 'translateX(0)';
+        }, 50);
+      }, 500);
+    }
+
+    function endQuiz() {
+      const quizContainer = document.getElementById("quiz");
+      quizContainer.innerHTML = `<div class="question">Thank you for taking the quiz!</div>`;
+    }
+
+    // Initialize the quiz
+    loadQuestion();
+  </script>
+</body>
+</html>
